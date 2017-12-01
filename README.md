@@ -1,2 +1,2 @@
 # AdventOfCode
-AdventOfCode Repository
+My AdventOfCode Solutions
