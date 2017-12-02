@@ -6,9 +6,7 @@ object Day1 : Day {
     override val name = "Inverse Captcha"
     override val starCount = 2
 
-    override fun exe() {
-        val input = this.javaClass.getResource("/inputs/day1.txt").readText(Charsets.UTF_8)
-
+    override fun exe(input: String) {
         part1(input)
         part2(input)
     }
@@ -16,7 +14,7 @@ object Day1 : Day {
     private fun part1(input: String) {
         var sum = 0
 
-        // Loop over ever character
+        // Loop over every character
         for ((index, char) in input.withIndex()) {
             // toInt() directly gets me the character code
             val charVal = char.toString().toInt()
@@ -36,7 +34,7 @@ object Day1 : Day {
 
         var halfwayAroundSteps = input.length / 2
 
-        // Loop over ever character
+        // Loop over every character
         for ((index, char) in input.withIndex()) {
             // toInt() directly gets me the character code
             val charVal = char.toString().toInt()

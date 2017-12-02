@@ -6,7 +6,7 @@ interface Day {
 
     val starCount: Int
 
-    fun exe()
+    fun exe(input: String)
 
 
 }

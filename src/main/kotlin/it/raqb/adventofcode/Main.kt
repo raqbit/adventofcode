@@ -1,14 +1,13 @@
 package it.raqb.adventofcode
 
 import com.andreapivetta.kolor.green
-import com.andreapivetta.kolor.lightGray
-import com.andreapivetta.kolor.lightWhite
 import com.andreapivetta.kolor.yellow
 import it.raqb.adventofcode.day1.Day1
+import it.raqb.adventofcode.day2.Day2
 
 val year = "2017"
 
-val days = arrayOf(Day1)
+val days = arrayOf(Day1, Day2)
 
 fun main(args: Array<String>) {
 
@@ -46,7 +45,9 @@ fun main(args: Array<String>) {
     println("Selected: Day $selectedDayNum.")
     println()
 
-    selectedDay.exe()
+    val input = Day::class.java.getResource("/inputs/day$selectedDayNum.txt").readText(Charsets.UTF_8)
+
+    selectedDay.exe(input)
 }
 
 fun getStars(starCount: Int): String {
