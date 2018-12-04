@@ -46,7 +46,7 @@ func parseClaims(lines []string) []claim {
 
 	for i, line := range lines {
 
-		parsed := parseClaim(claimMatcher, line)
+		parsed := shared.RegexMatch(claimMatcher, line)
 
 		// Ignoring errors here cause I don't wanna handle all of them >.>
 		x, _ := strconv.ParseInt(parsed["x"], 10, 64)
@@ -124,18 +124,6 @@ func claimHasOverlap(grid [][]int64, cl claim) bool {
 	}
 
 	return total != expectedTotal
-}
-
-func parseClaim(claimMatcher *regexp.Regexp, line string) map[string]string {
-	match := claimMatcher.FindStringSubmatch(line)
-	result := make(map[string]string)
-	for i, name := range claimMatcher.SubexpNames() {
-		if i != 0 && name != "" {
-			result[name] = match[i]
-		}
-	}
-
-	return result
 }
 
 //func visualizeGrid(grid [][]int64) {
