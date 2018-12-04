@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type square struct {
+type claim struct {
 	x  int64
 	y  int64
 	dx int64
@@ -29,20 +29,20 @@ func main() {
 
 	lines := strings.Split(input, "\n")
 
-	squares := parseClaims(lines)
+	claims := parseClaims(lines)
 
-	part1(squares)
-	part2(squares)
+	part1(claims)
+	part2(claims)
 }
 
-func parseClaims(lines []string) []square {
+func parseClaims(lines []string) []claim {
 	claimMatcher, err := regexp.Compile(claimRegex)
 
 	if err != nil {
 		panic("Could not compile claim regex")
 	}
 
-	squares := make([]square, len(lines))
+	claims := make([]claim, len(lines))
 
 	for i, line := range lines {
 
@@ -54,7 +54,7 @@ func parseClaims(lines []string) []square {
 		dx, _ := strconv.ParseInt(parsed["dx"], 10, 64)
 		dy, _ := strconv.ParseInt(parsed["dy"], 10, 64)
 
-		squares[i] = square{
+		claims[i] = claim{
 			x:  x,
 			y:  y,
 			dx: dx,
@@ -62,7 +62,7 @@ func parseClaims(lines []string) []square {
 		}
 	}
 
-	return squares
+	return claims
 }
 
 func makeGrid() [][]int64 {
@@ -75,14 +75,14 @@ func makeGrid() [][]int64 {
 	return grid
 }
 
-func part1(squares []square) {
+func part1(claims []claim) {
 	grid := makeGrid()
 
 	inchesWithMultiple := 0
 
-	for _, sq := range squares {
-		for i := sq.x; i < sq.x+sq.dx; i++ {
-			for j := sq.y; j < sq.y+sq.dy; j++ {
+	for _, cl := range claims {
+		for i := cl.x; i < cl.x+cl.dx; i++ {
+			for j := cl.y; j < cl.y+cl.dy; j++ {
 				grid[i][j]++
 
 				// If it's 2 we up the counter, we don't care if it's >2 since it has already been counted
@@ -96,28 +96,28 @@ func part1(squares []square) {
 	fmt.Printf("Number of Inches with multiple claims: %d\n", inchesWithMultiple)
 }
 
-func part2(squares []square) {
+func part2(claims []claim) {
 	grid := makeGrid()
 
-	for _, sq := range squares {
-		for i := sq.x; i < sq.x+sq.dx; i++ {
-			for j := sq.y; j < sq.y+sq.dy; j++ {
+	for _, cl := range claims {
+		for i := cl.x; i < cl.x+cl.dx; i++ {
+			for j := cl.y; j < cl.y+cl.dy; j++ {
 				grid[i][j]++
 			}
 		}
 	}
-	for i, square := range squares {
-		if !squareHasOverlap(grid, square) {
-			fmt.Printf("Found square without overlap: id %d\n", i+1)
+	for i, cl := range claims {
+		if !claimHasOverlap(grid, cl) {
+			fmt.Printf("Found claim without overlap: #%d\n", i+1)
 		}
 	}
 }
 
-func squareHasOverlap(grid [][]int64, sq square) bool {
-	expectedTotal := sq.dx * sq.dy
+func claimHasOverlap(grid [][]int64, cl claim) bool {
+	expectedTotal := cl.dx * cl.dy
 	var total int64
-	for i := sq.x; i < sq.x+sq.dx; i++ {
-		for j := sq.y; j < sq.y+sq.dy; j++ {
+	for i := cl.x; i < cl.x+cl.dx; i++ {
+		for j := cl.y; j < cl.y+cl.dy; j++ {
 			total += grid[i][j]
 		}
 	}
