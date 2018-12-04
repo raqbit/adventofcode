@@ -109,6 +109,7 @@ func part2(claims []claim) {
 	for i, cl := range claims {
 		if !claimHasOverlap(grid, cl) {
 			fmt.Printf("Found claim without overlap: #%d\n", i+1)
+			break
 		}
 	}
 }
