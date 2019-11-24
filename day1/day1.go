@@ -44,7 +44,7 @@ func part1(numbers []int64) {
 
 func part2(numbers []int64) {
 	var currTotal int64
-	var totals = make([]int64, 0)
+	var totals = make(map[int64]bool)
 	var firstDouble int64
 
 	index := 0
@@ -53,12 +53,12 @@ func part2(numbers []int64) {
 		currNum := numbers[index]
 		currTotal += currNum
 
-		if contains(totals, currTotal) {
+		if totals[currTotal] {
 			firstDouble = currTotal
 			break
 		}
 
-		totals = append(totals, currTotal)
+		totals[currTotal] = true
 
 		index++
 
@@ -68,13 +68,4 @@ func part2(numbers []int64) {
 	}
 
 	fmt.Printf("Resulting frequency: %d\n", firstDouble)
-}
-
-func contains(haystack []int64, needle int64) bool {
-	for _, thing := range haystack {
-		if thing == needle {
-			return true
-		}
-	}
-	return false
 }
