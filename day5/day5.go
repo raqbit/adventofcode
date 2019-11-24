@@ -27,13 +27,14 @@ func part1(input string) {
 }
 
 func part2(input string) {
-	checkedTypes := map[rune]struct{}{}
+	checkedTypes := make(map[rune]bool)
+	lowest := len(input)
 	for _, unitType := range input {
 		filteredInput := input
 		lowerUnitType := unicode.ToLower(unitType)
 
 		// Filter already checked types
-		if _, ok := checkedTypes[rune(lowerUnitType)]; ok {
+		if _, ok := checkedTypes[lowerUnitType]; ok {
 			continue
 		}
 
@@ -41,46 +42,39 @@ func part2(input string) {
 		filteredInput = strings.Replace(filteredInput, string(unicode.ToUpper(lowerUnitType)), "", -1)
 
 		result := react(filteredInput)
-		fmt.Printf("Filtering %s: %d\n", string(lowerUnitType), len(result))
-		checkedTypes[rune(lowerUnitType)] = struct{}{}
+		resultLen := len(result)
+		if resultLen < lowest {
+			lowest = resultLen
+		}
+		checkedTypes[lowerUnitType] = true
 	}
+
+	fmt.Printf("Smallest polymer: %d\n", lowest)
 }
 
 func react(input string) string {
-	currString := input
-	newString := ""
-	index := 0
+	stack := make([]rune, 0)
 
-	for {
-		currChar := currString[index]
-		nextChar := currString[index+1]
+	for _, currChar := range input {
+		n := int32(len(stack) - 1) // Top element
 
-		increment := 1
-
-		// Aa || aA
-		if unicode.IsUpper(rune(currChar)) && rune(nextChar) == unicode.ToLower(rune(currChar)) ||
-			unicode.IsLower(rune(currChar)) && rune(nextChar) == unicode.ToUpper(rune(currChar)) {
-			// If we did find it, skip these
-			increment = 2
-		} else {
-			// Else simply add it to the new string
-			newString += string(currChar)
-		}
-
-		// Do not process last character since it does not have a next char
-		if index+increment+1 >= len(currString) {
-			newString += string(nextChar)
-			if newString != currString {
-				currString = newString
-			} else {
-				break
-			}
-			newString = ""
-			index = 0
+		if n < 0 {
+			stack = append(stack, currChar)
 			continue
 		}
-		index += increment
+
+		lastChar := stack[n]
+
+		// Checking for aA || Aa
+		// 32 is the distance between the lower and uppercase in ascii/unicode
+		if currChar-32 == lastChar || currChar+32 == lastChar {
+			// Pop last char from stack
+			stack = stack[:n]
+		} else {
+			// Add current character to stack
+			stack = append(stack, currChar)
+		}
 	}
 
-	return newString
+	return string(stack)
 }
