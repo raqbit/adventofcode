@@ -20,38 +20,80 @@ func main() {
 		panic("Could not parse input")
 	}
 
-	part1(intcodes)
+	ic := shared.NewIntComputer()
+
+	ic.RegisterInstruction(&shared.Instruction{
+		Name:   "ADD",
+		Opcode: 1,
+		ArgC:   3,
+		Execute: func(c *shared.IntComputer, argv []int) {
+			c.Memory[argv[2]] = c.Memory[argv[0]] + c.Memory[argv[1]]
+			fmt.Printf("$%d + $%d => $%d\n", argv[2], argv[0], argv[1])
+		},
+	})
+
+	ic.RegisterInstruction(&shared.Instruction{
+		Name:   "MULT",
+		Opcode: 2,
+		ArgC:   3,
+		Execute: func(c *shared.IntComputer, argv []int) {
+			c.Memory[argv[2]] = c.Memory[argv[0]] * c.Memory[argv[1]]
+			fmt.Printf("$%d * $%d => $%d\n", argv[2], argv[0], argv[1])
+		},
+	})
+
+	ic.RegisterInstruction(&shared.Instruction{
+		Name:   "HALT",
+		Opcode: 99,
+		ArgC:   0,
+		Execute: func(c *shared.IntComputer, argv []int) {
+			c.FlagHalt()
+			fmt.Println("HALT")
+		},
+	})
+
+	part1(ic, intcodes)
 	fmt.Println("----")
-	part2(intcodes)
+	part2(ic, intcodes)
 }
 
-func part1(instructions []int) {
-	// Set noun
-	instructions[1] = 12
-	// Set verb
-	instructions[2] = 2
+func part1(ic *shared.IntComputer, instructions []int) {
+	ic.SetInitialMemory(instructions)
+	ic.SetNoun(12)
+	ic.SetVerb(2)
 
-	finalMem := runProgram(instructions)
+	err := ic.Start()
 
-	fmt.Printf("First cell of final program memory: %d\n", finalMem[0])
+	if err != nil {
+		fmt.Printf("IntComputer error: %v\n", err)
+		return
+	}
+	fmt.Printf("First cell of final program memory: %d\n", ic.Memory[0])
+	ic.Reset()
 }
 
-func part2(instructions []int) {
+func part2(ic *shared.IntComputer, instructions []int) {
 AllInputs:
-	for noun := 0; noun < 99; noun++ {
-		for verb := 0; verb < 99; verb++ {
-			// Set noun
-			instructions[1] = noun
-			// Set verb
-			instructions[2] = verb
+	for noun := 0; noun <= 99; noun++ {
+		for verb := 0; verb <= 99; verb++ {
+			ic.SetInitialMemory(instructions)
+			ic.SetNoun(noun)
+			ic.SetVerb(verb)
 
-			finalMem := runProgram(instructions)
+			err := ic.Start()
 
-			if finalMem[0] == 19690720 {
+			if err != nil {
+				fmt.Printf("IntComputer error: %v\n", err)
+				return
+			}
+
+			if ic.Memory[0] == 19690720 {
 				fmt.Printf("Found valid input, noun: %d, verb: %d\n", noun, verb)
 				fmt.Printf("Checksum: %d\n", 100*noun+verb)
 				break AllInputs
 			}
+
+			ic.Reset()
 		}
 	}
 }
