@@ -32,6 +32,19 @@ func (c *IntComputer) RegisterInstruction(inst *Instruction) {
 	c.instructions[inst.Opcode] = inst
 }
 
+func (c *IntComputer) SetInitialMemory(initMem []int) {
+	c.Memory = make([]int, len(initMem))
+	copy(c.Memory, initMem)
+}
+
+func (c *IntComputer) SetNoun(noun int) {
+	c.Memory[1] = noun
+}
+
+func (c *IntComputer) SetVerb(verb int) {
+	c.Memory[2] = verb
+}
+
 func (c *IntComputer) Start() error {
 	for {
 		opcode := c.Memory[c.ip]
@@ -51,16 +64,12 @@ func (c *IntComputer) Start() error {
 	return nil
 }
 
-func (c *IntComputer) Reset() {
-	c.Memory = nil
-	c.ip = 0
-}
-
 func (c *IntComputer) FlagHalt() {
 	c.halt = true
 }
 
-func (c *IntComputer) SetInitialMemory(initMem []int) {
-	c.Memory = make([]int, len(initMem))
-	copy(c.Memory, initMem)
+func (c *IntComputer) Reset() {
+	c.Memory = nil
+	c.ip = 0
+	c.halt = false
 }

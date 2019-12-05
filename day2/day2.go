@@ -48,7 +48,7 @@ func main() {
 		ArgC:   0,
 		Execute: func(c *shared.IntComputer, argv []int) {
 			c.FlagHalt()
-			fmt.Printf("HALT")
+			fmt.Println("HALT")
 		},
 	})
 
@@ -58,12 +58,9 @@ func main() {
 }
 
 func part1(ic *shared.IntComputer, instructions []int) {
-	// Set noun
-	instructions[1] = 12
-	// Set verb
-	instructions[2] = 2
-
 	ic.SetInitialMemory(instructions)
+	ic.SetNoun(12)
+	ic.SetVerb(2)
 
 	err := ic.Start()
 
@@ -71,20 +68,17 @@ func part1(ic *shared.IntComputer, instructions []int) {
 		fmt.Printf("IntComputer error: %v\n", err)
 		return
 	}
-
 	fmt.Printf("First cell of final program memory: %d\n", ic.Memory[0])
+	ic.Reset()
 }
 
 func part2(ic *shared.IntComputer, instructions []int) {
 AllInputs:
 	for noun := 0; noun <= 99; noun++ {
 		for verb := 0; verb <= 99; verb++ {
-			// Set noun
-			instructions[1] = noun
-			// Set verb
-			instructions[2] = verb
-
 			ic.SetInitialMemory(instructions)
+			ic.SetNoun(noun)
+			ic.SetVerb(verb)
 
 			err := ic.Start()
 
