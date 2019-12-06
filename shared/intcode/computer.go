@@ -88,21 +88,29 @@ func (c *Computer) Start() error {
 }
 
 func parseInstruction(inst int) (int, []ParamMode) {
-	instStr := strconv.Itoa(inst)
-
 	// Get lower two digits
 	opcode := inst % 100
 
+	// Get upper x digits
+	modeDigits := inst / 100
+
+	// Store param modes
 	paramModes := make([]ParamMode, 0)
 
-	if len(instStr) > 2 {
-		// Get lower two digits
-		instStr = instStr[:len(instStr)-2]
-
-		for i := len(instStr) - 1; i >= 0; i-- {
-			// Removing 0 ('1' - '0' == 1)
-			paramModes = append(paramModes, ParamMode(instStr[i]-'0'))
+	for {
+		// No param mode digits left, break
+		if modeDigits == 0 {
+			break
 		}
+
+		// Get least significant digit (LSD)
+		digit := modeDigits % 10
+
+		// Append digit as param mode to modes list
+		paramModes = append(paramModes, ParamMode(digit))
+
+		// Move to next digit
+		modeDigits /= 10
 	}
 
 	return opcode, paramModes
