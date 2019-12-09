@@ -27,23 +27,21 @@ type Computer struct {
 	err          error
 }
 
-func (c *Computer) GetValue(params []ParamMode, i int, value int) int {
+func (c *Computer) GetValue(params []ParamMode, index int, value int) int {
 	paramMode := Position
 
-	if i < len(params) {
-		paramMode = params[i]
+	if index < len(params) {
+		paramMode = params[index]
 	}
 
 	switch paramMode {
 	case Immediate:
 		return value
+	default:
+		fallthrough
 	case Position:
 		return c.Memory[value]
-	default:
-		fmt.Println("Error: Unknown param mode, returning 0")
 	}
-
-	return 0
 }
 
 func (c *Computer) Start() error {
@@ -81,7 +79,6 @@ func (c *Computer) Start() error {
 			// Increment by one plus the argument count of the instruction
 			c.ip += 1 + inst.paramC
 		}
-
 	}
 
 	return nil
@@ -94,7 +91,7 @@ func parseInstruction(inst int) (int, []ParamMode) {
 	// Get upper x digits
 	modeDigits := inst / 100
 
-	// Store param modes
+	// For storing param modes
 	paramModes := make([]ParamMode, 0)
 
 	for {
@@ -116,8 +113,14 @@ func parseInstruction(inst int) (int, []ParamMode) {
 	return opcode, paramModes
 }
 
-func (c *Computer) RegisterInstruction(opcode int, inst *Instruction) {
+func (c *Computer) RegisterInstruction(opcode int, inst *Instruction) error {
+	if _, ok := c.instructions[opcode]; ok {
+		return errors.New("opcode already in use")
+	}
+
 	c.instructions[opcode] = inst
+
+	return nil
 }
 
 func (c *Computer) SetInitialMemory(initMem []int) {
@@ -146,7 +149,7 @@ func (c *Computer) Reset() {
 func NewIntComputer() *Computer {
 	ic := &Computer{instructions: make(map[int]*Instruction)}
 
-	ic.RegisterInstruction(1, &Instruction{
+	_ = ic.RegisterInstruction(1, &Instruction{
 		Name:   "ADD",
 		paramC: 3,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -157,7 +160,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(2, &Instruction{
+	_ = ic.RegisterInstruction(2, &Instruction{
 		Name:   "MUL",
 		paramC: 3,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -168,7 +171,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(99, &Instruction{
+	_ = ic.RegisterInstruction(99, &Instruction{
 		Name:   "HLT",
 		paramC: 0,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -176,7 +179,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(4, &Instruction{
+	_ = ic.RegisterInstruction(4, &Instruction{
 		Name:   "OUT",
 		paramC: 1,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -184,7 +187,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(3, &Instruction{
+	_ = ic.RegisterInstruction(3, &Instruction{
 		Name:   "IN",
 		paramC: 1,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -209,7 +212,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(5, &Instruction{
+	_ = ic.RegisterInstruction(5, &Instruction{
 		Name:   "JNZ",
 		paramC: 2,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -222,7 +225,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(6, &Instruction{
+	_ = ic.RegisterInstruction(6, &Instruction{
 		Name:   "JZ",
 		paramC: 2,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -235,7 +238,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(7, &Instruction{
+	_ = ic.RegisterInstruction(7, &Instruction{
 		Name:   "LT",
 		paramC: 3,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {
@@ -250,7 +253,7 @@ func NewIntComputer() *Computer {
 		},
 	})
 
-	ic.RegisterInstruction(8, &Instruction{
+	_ = ic.RegisterInstruction(8, &Instruction{
 		Name:   "EQ",
 		paramC: 3,
 		Execute: func(c *Computer, modes []ParamMode, params []int) {

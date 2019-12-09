@@ -25,7 +25,7 @@ func (p Point) DistTo(other Point) int {
 	return int(dist)
 }
 
-func (p *Point) Update(dir Direction, amount int) {
+func (p *Point) Update(dir Direction) {
 	switch dir {
 	case Up:
 		p.Y++
@@ -89,7 +89,7 @@ func part1(wires []Wire) {
 			for i := 0; i < instruction.amount; i++ {
 
 				// Modify position based on direction
-				position.Update(instruction.direction, 1)
+				position.Update(instruction.direction)
 
 				if other, ok := wireMap[position]; ok {
 					if wire.index != other {
@@ -127,7 +127,7 @@ func part2(wires []Wire) {
 
 			for i := 0; i < instruction.amount; i++ {
 				// Modify position based on direction
-				position.Update(instruction.direction, 1)
+				position.Update(instruction.direction)
 
 				// Update step count
 				stepCount++
