@@ -41,13 +41,8 @@ func main() {
 	fmt.Printf("Finished part 2 in %d ms, %d us\n", duration.Milliseconds(), duration.Microseconds())
 }
 
-// O(2n), 30 microseconds
 func part1(entries []int) result {
 	set := make(map[int]bool)
-
-	for _, entry := range entries {
-		set[entry] = true
-	}
 
 	for _, entry := range entries {
 		other := Target - entry
@@ -56,27 +51,21 @@ func part1(entries []int) result {
 				fmt.Printf("Product: %d * %d = %d\n", entry, other, entry*other)
 			}
 		}
+
+		set[entry] = true
 	}
 
 	return noop
 }
 
-// 22 microseconds
 func part2(entries []int) result {
 	set := make(map[int]bool)
 
-	for _, entry := range entries {
-		set[entry] = true
-	}
-
-	for i := 0; i < len(entries); i++ {
-		a := entries[i]
-		for j := 0; j < len(entries); j++ {
+	for i, a := range entries {
+		for j, b := range entries {
 			if i == j {
 				continue
 			}
-
-			b := entries[j]
 
 			ab := a + b
 
@@ -91,6 +80,8 @@ func part2(entries []int) result {
 					fmt.Printf("Product: %d * %d * %d = %d\n", a, b, c, a*b*c)
 				}
 			}
+
+			set[b] = true
 		}
 	}
 
