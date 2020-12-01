@@ -61,7 +61,7 @@ func part1(entries []int) result {
 	return noop
 }
 
-// 50 microseconds
+// 22 microseconds
 func part2(entries []int) result {
 	set := make(map[int]bool)
 
@@ -69,9 +69,9 @@ func part2(entries []int) result {
 		set[entry] = true
 	}
 
-	for i := len(entries) - 1; i >= 0; i-- {
+	for i := 0; i < len(entries); i++ {
 		a := entries[i]
-		for j := len(entries) - 1; j >= 0; j-- {
+		for j := 0; j < len(entries); j++ {
 			if i == j {
 				continue
 			}
