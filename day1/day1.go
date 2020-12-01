@@ -2,11 +2,19 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"raqb.it/AdventOfCode/shared"
 	"strconv"
 	"strings"
+	"time"
 )
+
+const Target = 2020
+
+type result func()
+
+var noop result = func() {
+	println("no results")
+}
 
 func main() {
 	input, err := shared.LoadInputFile("input.txt")
@@ -17,49 +25,76 @@ func main() {
 
 	lines := strings.Split(input, "\n")
 	numbers := parseLines(lines)
-	part1(numbers)
+
+	start := time.Now()
+	res := part1(numbers)
+	duration := time.Since(start)
+	res()
+	fmt.Printf("Finished part 1 in %d ms, %d us\n", duration.Milliseconds(), duration.Microseconds())
+
 	fmt.Println("----")
-	part2(numbers)
+
+	start = time.Now()
+	res = part2(numbers)
+	duration = time.Since(start)
+	res()
+	fmt.Printf("Finished part 2 in %d ms, %d us\n", duration.Milliseconds(), duration.Microseconds())
 }
 
-func part1(moduleMasses []int) {
-	var fuelTotal int
+// O(2n), 30 microseconds
+func part1(entries []int) result {
+	set := make(map[int]bool)
 
-	// Add calculated fuel for all modules to the total
-	for _, moduleMass := range moduleMasses {
-		fuelTotal += calculateFuel(moduleMass)
+	for _, entry := range entries {
+		set[entry] = true
 	}
 
-	fmt.Printf("Rocket total fuel mass: %d\n", fuelTotal)
-}
-
-func part2(moduleMasses []int) {
-	var rocketTotal int
-
-	for _, moduleMass := range moduleMasses {
-		var moduleTotal int
-		remainingMass := moduleMass
-
-		for {
-			fuelNeed := calculateFuel(remainingMass)
-			if fuelNeed <= 0 {
-				// Wish really hard
-				break
+	for _, entry := range entries {
+		other := Target - entry
+		if _, ok := set[other]; ok {
+			return func() {
+				fmt.Printf("Product: %d * %d = %d\n", entry, other, entry*other)
 			}
-			moduleTotal += fuelNeed
-			remainingMass = fuelNeed
 		}
-
-		// Add module total to rocket total
-		rocketTotal += moduleTotal
 	}
 
-	fmt.Printf("Rocket total fuel mass: %d\n", rocketTotal)
+	return noop
 }
 
-// Calculates the fuel need for a given mass
-func calculateFuel(mass int) int {
-	return int(math.Floor(float64(mass/3.0))) - 2
+// 50 microseconds
+func part2(entries []int) result {
+	set := make(map[int]bool)
+
+	for _, entry := range entries {
+		set[entry] = true
+	}
+
+	for i := len(entries) - 1; i >= 0; i-- {
+		a := entries[i]
+		for j := len(entries) - 1; j >= 0; j-- {
+			if i == j {
+				continue
+			}
+
+			b := entries[j]
+
+			ab := a + b
+
+			if ab >= Target {
+				continue
+			}
+
+			c := Target - ab
+
+			if _, ok := set[c]; ok {
+				return func() {
+					fmt.Printf("Product: %d * %d * %d = %d\n", a, b, c, a*b*c)
+				}
+			}
+		}
+	}
+
+	return noop
 }
 
 // Parses the input lines as integers
