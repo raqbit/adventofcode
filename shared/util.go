@@ -5,6 +5,12 @@ import (
 	"regexp"
 )
 
+type Result func()
+
+var NoopResult Result = func() {
+	println("no results")
+}
+
 func LoadInputFile(loc string) (string, error) {
 	data, err := ioutil.ReadFile(loc)
 	if err != nil {

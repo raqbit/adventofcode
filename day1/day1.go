@@ -10,12 +10,6 @@ import (
 
 const Target = 2020
 
-type result func()
-
-var noop result = func() {
-	println("no results")
-}
-
 func main() {
 	input, err := shared.LoadInputFile("input.txt")
 
@@ -41,7 +35,7 @@ func main() {
 	fmt.Printf("Finished part 2 in %d ms, %d us\n", duration.Milliseconds(), duration.Microseconds())
 }
 
-func part1(entries []int) result {
+func part1(entries []int) shared.Result {
 	set := make(map[int]bool)
 
 	for _, entry := range entries {
@@ -55,10 +49,10 @@ func part1(entries []int) result {
 		set[entry] = true
 	}
 
-	return noop
+	return shared.NoopResult
 }
 
-func part2(entries []int) result {
+func part2(entries []int) shared.Result {
 	set := make(map[int]bool)
 
 	for i, a := range entries {
@@ -85,7 +79,7 @@ func part2(entries []int) result {
 		}
 	}
 
-	return noop
+	return shared.NoopResult
 }
 
 // Parses the input lines as integers
