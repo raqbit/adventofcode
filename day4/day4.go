@@ -57,21 +57,31 @@ func main() {
 	}
 
 	lines := strings.Split(input, "\n")
-	passports := parseLines(lines)
 
 	start := time.Now()
+	passports := parseLines(lines)
+	parseTime := time.Since(start)
+	fmt.Printf("Parsed in %s\n", parseTime.String())
+
+	fmt.Println("----")
+
+	start = time.Now()
 	res := part1(passports)
-	duration := time.Since(start)
+	part1Time := time.Since(start)
 	res()
-	fmt.Printf("Finished part 1 in %s\n", duration.String())
+	fmt.Printf("Finished part 1 in %s\n", part1Time.String())
 
 	fmt.Println("----")
 
 	start = time.Now()
 	res = part2(passports)
-	duration = time.Since(start)
+	part2Time := time.Since(start)
 	res()
-	fmt.Printf("Finished part 2 in %s\n", duration.String())
+	fmt.Printf("Finished part 2 in %s\n", part2Time.String())
+
+	fmt.Println("----")
+
+	fmt.Printf("Total time: %s\n", parseTime+part1Time+part2Time)
 }
 
 func part1(passports []passport) shared.Result {
@@ -155,6 +165,7 @@ func validateHeight(length string) error {
 	}
 
 	unit := length[len(length)-2:]
+
 	val, err := parseInt(length[:len(length)-2])
 
 	if err != nil {
@@ -251,6 +262,8 @@ func parseLines(lines []string) []passport {
 			case Pid:
 				pp.pid = value
 			case Cid:
+				fallthrough
+			default:
 				// Ignore
 				continue
 			}
