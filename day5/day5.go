@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"raqb.it/AdventOfCode/shared"
 	"sort"
 	"strings"
@@ -10,10 +9,8 @@ import (
 )
 
 const (
-	Front rune = 'F'
 	Back  rune = 'B'
 	Right rune = 'R'
-	Left  rune = 'L'
 )
 
 func main() {
@@ -59,6 +56,7 @@ func part1(passes []string) shared.Result {
 		}
 
 		seatID := getPassSeatID(pass)
+
 		if seatID > highest {
 			highest = seatID
 		}
@@ -70,28 +68,16 @@ func part1(passes []string) shared.Result {
 }
 
 func getPassSeatID(pass string) int {
-	rowPart := pass[:7]
-	colPart := pass[7:]
+	num := 0
 
-	row := calculatePlace(rowPart, Front, Back)
-	col := calculatePlace(colPart, Left, Right)
-
-	return row*8 + col
-}
-
-func calculatePlace(part string, frontRune, backRune rune) int {
-	currMin := 0
-	currMax := int(math.Pow(2, float64(len(part))))
-
-	for _, c := range part {
-		if c == frontRune {
-			currMax -= (currMax - currMin) / 2
-		} else if c == backRune {
-			currMin += (currMax - currMin) / 2
+	for _, c := range pass {
+		num <<= 1
+		if c == Right || c == Back {
+			num |= 0b1
 		}
 	}
 
-	return currMin
+	return num
 }
 
 func part2(passes []string) shared.Result {
