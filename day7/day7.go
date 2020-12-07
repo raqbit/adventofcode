@@ -38,7 +38,7 @@ func main() {
 
 	start := time.Now()
 	bags := strings.Split(input, "\n")
-	bagIndex := parseBags(bags)
+	bagIndex := parseBagRules(bags)
 	parseTime := time.Since(start)
 	fmt.Printf("Parsed in %s\n", parseTime.String())
 
@@ -106,14 +106,14 @@ func part2(bags map[string]bag) shared.Result {
 	count := countBags(bags, bags[ShinyBag])
 
 	return func() {
-		fmt.Printf("# of bags: %d\n", count)
+		fmt.Printf("# of bags in %s: %d\n", ShinyBag, count)
 	}
 }
 
-func parseBags(bags []string) map[string]bag {
+func parseBagRules(bagRules []string) map[string]bag {
 	bagIndex := make(map[string]bag)
 
-	for _, bagString := range bags {
+	for _, bagString := range bagRules {
 		bagRule := shared.RegexMatch(regexp.MustCompile(BagStatementRegex), bagString)
 		parentBagType := bagRule["type"]
 		bagContents := bagRule["rule"]
