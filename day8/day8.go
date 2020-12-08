@@ -80,21 +80,26 @@ func part1(code []instruction) shared.Result {
 }
 
 func part2(code []instruction) shared.Result {
-	changeIndex := 0
+	changeIndex := -1
 
 	for {
-		patched := make([]instruction, len(code))
-		copy(patched, code)
+		if changeIndex >= 0 {
+			if code[changeIndex].opcode == nop {
+				code[changeIndex].opcode = jmp
+			} else {
+				code[changeIndex].opcode = nop
+			}
+		}
 
 		// Change next jmp/nop into nop/jmp
 		for i := changeIndex + 1; i < len(code); i++ {
-			opcode := patched[i].opcode
+			opcode := code[i].opcode
 
 			if opcode == jmp || opcode == nop {
 				if opcode == jmp {
-					patched[i].opcode = nop
+					code[i].opcode = nop
 				} else if opcode == nop {
-					patched[i].opcode = jmp
+					code[i].opcode = jmp
 				}
 
 				changeIndex = i
@@ -103,7 +108,7 @@ func part2(code []instruction) shared.Result {
 		}
 
 		// Run computer with patched code
-		ret, err := runComputer(patched)
+		ret, err := runComputer(code)
 
 		if err == nil {
 			return func() {
