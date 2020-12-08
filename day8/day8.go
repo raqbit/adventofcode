@@ -18,9 +18,9 @@ type (
 )
 
 const (
-	acc operation = "acc"
-	jmp operation = "jmp"
-	nop operation = "nop"
+	opACC operation = "acc"
+	opJMP operation = "jmp"
+	opNOP operation = "nop"
 )
 
 var (
@@ -65,8 +65,7 @@ func main() {
 }
 
 func part1(code []instruction) shared.Result {
-
-	accumulator, err := runComputer(code)
+	ret, err := runComputer(code)
 
 	if err != ErrInfiniteLoop {
 		return func() {
@@ -75,7 +74,7 @@ func part1(code []instruction) shared.Result {
 	}
 
 	return func() {
-		fmt.Printf("Accumulator: %d\n", accumulator)
+		fmt.Printf("Final accumulator: %d\n", ret)
 	}
 }
 
@@ -91,7 +90,7 @@ func part2(code []instruction) shared.Result {
 
 		if err == nil {
 			return func() {
-				fmt.Printf("Accumulator: %d\n", ret)
+				fmt.Printf("Final accumulator: %d\n", ret)
 			}
 		}
 	}
@@ -99,10 +98,10 @@ func part2(code []instruction) shared.Result {
 
 func patchCode(code []instruction, changeIndex int) int {
 	if changeIndex >= 0 {
-		if code[changeIndex].opcode == nop {
-			code[changeIndex].opcode = jmp
+		if code[changeIndex].opcode == opNOP {
+			code[changeIndex].opcode = opJMP
 		} else {
-			code[changeIndex].opcode = nop
+			code[changeIndex].opcode = opNOP
 		}
 	}
 
@@ -110,11 +109,11 @@ func patchCode(code []instruction, changeIndex int) int {
 	for i := changeIndex + 1; i < len(code); i++ {
 		opcode := code[i].opcode
 
-		if opcode == jmp {
-			code[i].opcode = nop
+		if opcode == opJMP {
+			code[i].opcode = opNOP
 			return i
-		} else if opcode == nop {
-			code[i].opcode = jmp
+		} else if opcode == opNOP {
+			code[i].opcode = opJMP
 			return i
 		}
 	}
@@ -125,17 +124,17 @@ func patchCode(code []instruction, changeIndex int) int {
 func runComputer(code []instruction) (int, error) {
 	visited := make(map[int]bool)
 	ip := 0
-	accumulator := 0
+	acc := 0
 
 	for {
 		// Stop if ip is outside code range
 		if ip == len(code) {
-			return accumulator, nil
+			return acc, nil
 		}
 
 		// Detect infinite loop
 		if visited[ip] {
-			return accumulator, ErrInfiniteLoop
+			return acc, ErrInfiniteLoop
 		}
 
 		inst := code[ip]
@@ -143,12 +142,12 @@ func runComputer(code []instruction) (int, error) {
 		visited[ip] = true
 
 		switch inst.opcode {
-		case acc:
-			accumulator += inst.argument
-		case jmp:
+		case opACC:
+			acc += inst.argument
+		case opJMP:
 			ip = ip + inst.argument
 			continue
-		case nop:
+		case opNOP:
 		}
 
 		ip++
