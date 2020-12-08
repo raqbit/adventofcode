@@ -110,13 +110,11 @@ func patchCode(code []instruction, changeIndex int) int {
 	for i := changeIndex + 1; i < len(code); i++ {
 		opcode := code[i].opcode
 
-		if opcode == jmp || opcode == nop {
-			if opcode == jmp {
-				code[i].opcode = nop
-			} else if opcode == nop {
-				code[i].opcode = jmp
-			}
-
+		if opcode == jmp {
+			code[i].opcode = nop
+			return i
+		} else if opcode == nop {
+			code[i].opcode = jmp
 			return i
 		}
 	}
