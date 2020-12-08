@@ -83,29 +83,8 @@ func part2(code []instruction) shared.Result {
 	changeIndex := -1
 
 	for {
-		if changeIndex >= 0 {
-			if code[changeIndex].opcode == nop {
-				code[changeIndex].opcode = jmp
-			} else {
-				code[changeIndex].opcode = nop
-			}
-		}
-
-		// Change next jmp/nop into nop/jmp
-		for i := changeIndex + 1; i < len(code); i++ {
-			opcode := code[i].opcode
-
-			if opcode == jmp || opcode == nop {
-				if opcode == jmp {
-					code[i].opcode = nop
-				} else if opcode == nop {
-					code[i].opcode = jmp
-				}
-
-				changeIndex = i
-				break
-			}
-		}
+		// Patch code
+		changeIndex = patchCode(code, changeIndex)
 
 		// Run computer with patched code
 		ret, err := runComputer(code)
@@ -116,6 +95,33 @@ func part2(code []instruction) shared.Result {
 			}
 		}
 	}
+}
+
+func patchCode(code []instruction, changeIndex int) int {
+	if changeIndex >= 0 {
+		if code[changeIndex].opcode == nop {
+			code[changeIndex].opcode = jmp
+		} else {
+			code[changeIndex].opcode = nop
+		}
+	}
+
+	// Change next jmp/nop into nop/jmp
+	for i := changeIndex + 1; i < len(code); i++ {
+		opcode := code[i].opcode
+
+		if opcode == jmp || opcode == nop {
+			if opcode == jmp {
+				code[i].opcode = nop
+			} else if opcode == nop {
+				code[i].opcode = jmp
+			}
+
+			return i
+		}
+	}
+
+	panic("Could not find new patch to make")
 }
 
 func runComputer(code []instruction) (int, error) {
