@@ -21,7 +21,7 @@ func main() {
 
 	start := time.Now()
 	bags := strings.Split(input, "\n")
-	bagIndex := parseInstructions(bags)
+	bagIndex := parseNumbers(bags)
 	parseTime := time.Since(start)
 	fmt.Printf("Parsed in %s\n", parseTime.String())
 
@@ -134,7 +134,7 @@ func part2(numbers []int) shared.Result {
 	}
 }
 
-func parseInstructions(lines []string) []int {
+func parseNumbers(lines []string) []int {
 	numbers := make([]int, len(lines))
 
 	for i, line := range lines {
