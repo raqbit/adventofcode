@@ -20,15 +20,15 @@ func main() {
 	}
 
 	start := time.Now()
-	bags := strings.Split(input, "\n")
-	bagIndex := parseNumbers(bags)
+	lines := strings.Split(input, "\n")
+	numbers := parseNumbers(lines)
 	parseTime := time.Since(start)
 	fmt.Printf("Parsed in %s\n", parseTime.String())
 
 	fmt.Println("----")
 
 	start = time.Now()
-	res := part1(bagIndex)
+	res := part1(numbers)
 	part1Time := time.Since(start)
 	res()
 	fmt.Printf("Finished part 1 in %s\n", part1Time.String())
@@ -36,7 +36,7 @@ func main() {
 	fmt.Println("----")
 
 	start = time.Now()
-	res = part2(bagIndex)
+	res = part2(numbers)
 	part2Time := time.Since(start)
 	res()
 	fmt.Printf("Finished part 2 in %s\n", part2Time.String())
