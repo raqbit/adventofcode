@@ -1,2 +1,4 @@
-.idea/
-input.txt
+debug/
+target/
+Cargo.lock
+*/input.txt
