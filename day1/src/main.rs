@@ -1,10 +1,8 @@
-use std::fs::File;
-use std::io;
-use std::io::{BufRead, BufReader};
+use shared;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let nums: Vec<u32> =
-        get_lines_of_file("input.txt")?
+        shared::get_lines_of_file("input.txt")?
             .filter_map(|res| res.ok())
             .filter_map(|line| line.parse::<u32>().ok())
             .collect();
@@ -50,8 +48,3 @@ fn part2(nums: &[u32]) -> u32 {
     increases
 }
 
-fn get_lines_of_file(path: &str) -> io::Result<io::Lines<BufReader<File>>> {
-    let input = File::open(path)?;
-    let reader = BufReader::new(input);
-    Ok(reader.lines())
-}
