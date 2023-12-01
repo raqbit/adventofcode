@@ -2,7 +2,7 @@ use shared;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let nums: Vec<u32> =
-        shared::get_lines_of_file("input.txt")?
+        shared::get_lines_of_file("input/day1.txt")?
             .filter_map(|res| res.ok())
             .filter_map(|line| line.parse::<u32>().ok())
             .collect();

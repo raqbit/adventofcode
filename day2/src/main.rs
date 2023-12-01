@@ -29,7 +29,7 @@ impl FromStr for Direction {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let commands: Vec<Command> =
-        shared::get_lines_of_file("input.txt")?
+        shared::get_lines_of_file("input/day2.txt")?
             .filter_map(|res| res.ok())
             .filter_map(|line| {
                 if let [direction, amount] = line.split_whitespace().collect::<Vec<&str>>()[..] {
