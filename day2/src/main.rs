@@ -1,3 +1,4 @@
+use std::cmp::max;
 use std::convert::identity;
 use std::io;
 
@@ -77,6 +78,12 @@ fn main() -> io::Result<()> {
     let result = find_possible_games(&games);
 
     println!("Result part 1: {:}", result);
+    let result = games.iter().fold(0, |mut acc, game: &Game| {
+        acc += calculate_game_power(game);
+        acc
+    });
+
+    println!("Result part 2: {:}", result);
 
     Ok(())
 }
@@ -93,4 +100,18 @@ fn find_possible_games(games: &Vec<Game>) -> u32 {
             }
             acc
         })
+}
+
+fn calculate_game_power(game: &Game) -> u32 {
+    let mut max_red = 0;
+    let mut max_green = 0;
+    let mut max_blue = 0;
+
+    for set in &game.sets {
+        max_red = max(u32::from(set.red), max_red);
+        max_green = max(u32::from(set.green), max_green);
+        max_blue = max(u32::from(set.blue), max_blue);
+    }
+
+    max_red * max_green * max_blue
 }
