@@ -1,6 +1,6 @@
 import math
 from itertools import pairwise
-from pathlib import PurePath
+from pathlib import Path
 
 from shared import read_input
 
@@ -26,21 +26,13 @@ def _is_safe_report_with_dampener(report: list[int]) -> bool:
         return True
 
     # Naive approach: Will just try again when removing one of the levels
-    for i, _ in enumerate(report):
-        if _is_safe_report(report[:i] + report[i + 1:]):
-            return True
-
-    return False
+    return any(_is_safe_report(report[:i] + report[i + 1:]) for i in range(len(report)))
 
 
-def main():
-    reports = [
-        [int(level) for level in line.split(' ')]
-        for line in read_input(PurePath('input.txt'))
-    ]
+def main() -> None:
+    reports = [[int(level) for level in line.split(" ")] for line in read_input(Path("input.txt"))]
 
     print(f"Part 1 result: {sum(_is_safe_report(report) for report in reports)}")
-
     print(f"Part 2 result: {sum(_is_safe_report_with_dampener(report) for report in reports)}")
 
 

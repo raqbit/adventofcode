@@ -1,8 +1,8 @@
-import pathlib
 from collections.abc import Iterable
+from pathlib import Path
 
 
-def read_input(file: pathlib.PurePath) -> Iterable[str]:
-    with open(file) as f:
+def read_input(file: Path) -> Iterable[str]:
+    with file.open() as f:
         for line in f:
             yield line.strip()

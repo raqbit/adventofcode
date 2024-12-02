@@ -1,0 +1,14 @@
+[project]
+name = "adventofcode"
+version = "0.1.0"
+description = "My advent of code solutions"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "T201", "COM812", "ISC001", "PLR2004"]
