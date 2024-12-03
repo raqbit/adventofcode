@@ -2,11 +2,11 @@ import functools
 from collections import Counter
 from pathlib import Path
 
-from shared import read_input
+from shared import read_input_lines
 
 
 def main() -> None:
-    lines = list(read_input(Path("input.txt")))
+    lines = list(read_input_lines(Path("input.txt")))
 
     nums_left = []
     nums_right = []

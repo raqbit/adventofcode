@@ -2,7 +2,7 @@ import math
 from itertools import pairwise
 from pathlib import Path
 
-from shared import read_input
+from shared import read_input_lines
 
 
 def _is_safe_report(report: list[int]) -> bool:
@@ -30,7 +30,7 @@ def _is_safe_report_with_dampener(report: list[int]) -> bool:
 
 
 def main() -> None:
-    reports = [[int(level) for level in line.split(" ")] for line in read_input(Path("input.txt"))]
+    reports = [[int(level) for level in line.split(" ")] for line in read_input_lines(Path("input.txt"))]
 
     print(f"Part 1 result: {sum(_is_safe_report(report) for report in reports)}")
     print(f"Part 2 result: {sum(_is_safe_report_with_dampener(report) for report in reports)}")
