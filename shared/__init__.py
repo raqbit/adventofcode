@@ -9,4 +9,4 @@ def read_input_lines(file: Path) -> Iterable[str]:
 
 def read_input(file: Path) -> str:
     with file.open() as f:
-        return f.read()
+        return f.read().strip()
