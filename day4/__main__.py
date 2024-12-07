@@ -3,12 +3,16 @@ from pathlib import Path
 from shared import read_input
 
 
+def _pos_or_none(idx: int) -> int | None:
+    """
+    If the index is negative, we don't want Python's negative
+    slicing wraparound behavior, but instead slice until the beginning,
+    which we can accomplish by using None.
+    """
+    return idx if idx >= 0 else None
+
+
 def _count_word_occurrences(crossword: str, word: str) -> int:
-    """
-    Note: This has a known bug in the edge case that any word searched ends
-    right at the start of the input. The max()'s are there to prevent this from being
-    an issue
-    """
     row_len = crossword.find("\n") + 1
 
     total = 0
@@ -21,7 +25,7 @@ def _count_word_occurrences(crossword: str, word: str) -> int:
             total += 1
 
         # Horizontal reverse
-        if crossword[pos : max(pos - len(word), 0) : -1] == word:
+        if crossword[pos : _pos_or_none(pos - len(word)) : -1] == word:
             total += 1
 
         # Vertical down
@@ -29,7 +33,7 @@ def _count_word_occurrences(crossword: str, word: str) -> int:
             total += 1
 
         # Vertical up
-        if crossword[pos : max(pos - (row_len * len(word)), 0) : -row_len] == word:
+        if crossword[pos : _pos_or_none(pos - (row_len * len(word))) : -row_len] == word:
             total += 1
 
         # Diagonal down right
@@ -41,11 +45,11 @@ def _count_word_occurrences(crossword: str, word: str) -> int:
             total += 1
 
         # Diagonal up left
-        if crossword[pos : max(pos - (row_len * len(word)), 0) : -(row_len + 1)] == word:
+        if crossword[pos : _pos_or_none(pos - (row_len * len(word))) : -(row_len + 1)] == word:
             total += 1
 
         # Diagonal up right
-        if crossword[pos : max(pos - (row_len * (len(word) - 1)), 0) : -(row_len - 1)] == word:
+        if crossword[pos : _pos_or_none(pos - (row_len * (len(word) - 1))) : -(row_len - 1)] == word:
             total += 1
 
     return total
@@ -75,7 +79,6 @@ def _count_cross_mas(input_str: str) -> int:
 
 def main() -> None:
     crossword = read_input(Path("input.txt"))
-    # 2607: too low
     print(f"Part 1 result: {_count_word_occurrences(crossword, "XMAS")}")
     print(f"Part 2 result: {_count_cross_mas(crossword)}")
 
